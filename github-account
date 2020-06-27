@@ -1,0 +1,58 @@
+1) Create a New SSH Key 
+type:
+-> ssh-keygen -t rsa -C "your-email-address"
+
+Be careful that you don't over-write your existing key for your personal account. Instead, when prompted, save the file as id_rsa_bits3dec
+
+
+2) Attach the New Key
+Next, login to your second GitHub account, browse to "Account Overview," and attach the new key, within the "SSH Public Keys" section. 
+To retrieve the value of the key that you just created, return to the Terminal, and 
+type: 
+-> vim ~/.ssh/id_rsa_bits3dec.pub
+
+Copy the entire string that is displayed, and paste this into the GitHub textarea. Feel free to give it any title you wish.
+
+Next, because we saved our key with a unique name, we need to tell SSH about it. Within the Terminal, 
+type:
+-> ssh-add ~/.ssh/id_rsa_COMPANY
+
+If successful, you'll see a response of "Identity Added."
+
+
+3) Create a Config File
+type:
+-> touch ~/.ssh/config
+-> vim config
+
+Paste in the following snippet-
+
+#Default GitHub
+Host github.com
+  HostName github.com
+  User git
+  IdentityFile ~/.ssh/id_rsa
+
+//This is the default setup for pushing to our personal GitHub account. Notice that we're able to attach an identity file to the host. Let's add another one for the company account. Directly below the code above, add:
+
+Host github-bits3dec
+  HostName github.com
+  User git
+  IdentityFile ~/.ssh/id_rsa_bits3dec
+
+//This time, rather than setting the host to github.com, we've named it as github-bits3dec. The difference is that we're now attaching the new identity file that we created previously: id_rsa_bits3dec. Save the page and exit!
+
+
+4) Try it Out
+-> git init
+-> git commit -m "first commit'
+
+Login to your bits3dec account, create a new repository, give it a name of "Test," and then return to the Terminal and push your git repo to GitHub.
+
+-> git remote add origin git@github-bits3dec:bits3dec/test.git
+-> git push origin master
+
+Note that, this time, rather than pushing to git@github.com, we're using the custom host that we create in the
+config file: git@github-bits3dec.
+
+For your bits3dec account, make sure that you use git@github-COMPANY as the host
